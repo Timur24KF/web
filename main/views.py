@@ -1,5 +1,8 @@
 from django.shortcuts import render
+from .models import Category, Post
+
 
 def index(request):
-    return render(request, 'main/main.html')
-
+    posts = Post.objects.all()
+    context = {'posts': posts}
+    return render(request, "main/index.html", context)
