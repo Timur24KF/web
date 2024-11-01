@@ -5,7 +5,6 @@
 
 
 {% block content %}
-
 {% for post in posts %}
     <h1><a href="{% url "main:post" post.id %}">{{ post.title }}</a></h1>
     <hr>
