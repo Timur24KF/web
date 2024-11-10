@@ -1,9 +1,12 @@
-from django.urls import path
-from main import views
+from django.urls import path, include
+from .views import *
 
-app_name = "main"
 
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("post/<int:id>", views.post, name="post"),
+    path("posts/user/<int:pk>", PostUserAPIView.as_view()),
+    path("posts/category/<int:pk>", PostCategoryAPIView.as_view()),
+    path("posts", PostsApiView.as_view()), 
+    path("post/<int:pk>", PostDetailApiView.as_view()), 
+
+    path("auth", include("rest_framework.urls")),
 ]

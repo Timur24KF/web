@@ -1,11 +1,10 @@
 from tkinter import CASCADE
 from django.db import models
-from users.models import User
+from django.contrib.auth.models import User
 
 
 class Category(models.Model):
     name = models.CharField(max_length=150, unique=True)
-
     def __str__(self):
         return self.name
 
@@ -13,7 +12,7 @@ class Category(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=150, unique=True)
     body = models.TextField()
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='posts')
     category = models.ForeignKey(
         to=Category, on_delete=models.CASCADE, blank=True, null=True
     )
@@ -21,3 +20,6 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+    class Meta:
+        ordering = ["-created_at"]
