@@ -1,7 +1,5 @@
 from rest_framework import generics, status, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.db.models import Count
