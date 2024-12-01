@@ -21,6 +21,10 @@ class Post(models.Model):
     @property
     def total_likes(self):
         return self.likes.count
+    
+    @property
+    def total_comments(self):
+        return self.comments.count
 
     def __str__(self):
         return self.title
@@ -44,4 +48,7 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     body = models.TextField()
+
+    def __str__(self):
+        return self.post.title
 

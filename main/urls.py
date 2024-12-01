@@ -27,6 +27,8 @@ urlpatterns = [
     path("post/<int:pk>/deletelike", LikeDeleteAPIView.as_view()),
     path("profile/change", UserUpdateAPIView.as_view()),
     path("profile/change-password", ChangePasswordAPIView.as_view()),
+    path("register", CreateUserAPIView.as_view()),
+    
 
 
     path("auth", include("rest_framework.urls")),

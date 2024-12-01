@@ -1,12 +1,13 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from django.db.models import Count
 
 from .models import Like, Post, Comment
-from .serializers import ChangePasswordSerializer, LikeSerializer, PostCommentsSerializer, PostsSerializer, UserSerializer
+from .serializers import ChangePasswordSerializer, CreateUserSerializer, LikeSerializer, PostCommentsSerializer, PostsSerializer, UserSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
@@ -14,11 +15,20 @@ class PostsAPIView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        posts = Post.objects.all()
+
         sorted_by = self.request.query_params.get("sorted_by", 0)
         if sorted_by == "likes":
-            return Post.objects.order_by('likes')
-        return Post.objects.order_by('created_at')
+            posts = posts.annotate(num_likes=Count('likes')).order_by('-num_likes')
+        elif sorted_by == "comments":
+            posts = posts.annotate(num_comments=Count('comments')).order_by('-num_comments')
+        
+
+        return posts
+    
     serializer_class = PostsSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'body']
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -66,6 +76,13 @@ class UserUpdateAPIView(generics.UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+
+
+class CreateUserAPIView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = CreateUserSerializer
+
     
 
 class ChangePasswordAPIView(generics.UpdateAPIView):
